@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Gallery from "./components/Gallery";
+import Slider from "./components/Slider";
 import Search from "./components/Search";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
   };
   useEffect(() => {
     fetch(
-      "https://api.pexels.com/v1/search?page=1&query=nature&orientation=landscape&size=large",
+      "https://api.pexels.com/v1/search?page=1&query=nature&mountain=portrait&size=large",
       {
         headers,
       }
@@ -23,15 +23,12 @@ function App() {
         console.error("Error: ", error);
       });
   }, []);
+
+
   return (
-    <div>
-      <h1 className="bg-blue-300 flex justify-center items-center text-2xl py-3 my-3">
-        3D GALLERY
-      </h1>
-      <div className="flex flex-row justify-start my-3">
-        <Search />
-        <Gallery images={fetchedImages}></Gallery>
-      </div>
+    <div className="relative flex flex-col bg-black w-screen min-h-screen text-white">
+      <Search />
+      <Slider images={fetchedImages} />
     </div>
   );
 }
