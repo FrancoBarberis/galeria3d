@@ -4,20 +4,35 @@ import Layout from "./components/Layout";
 
 function App() {
   const [fetchedImages, setFetchedImages] = useState([]);
-  const headers = {
-    Authorization: "efKmjO98NTW2P6B0yW0jwk6dgHw8H8gYKfK4zlpteXvQDi8PBHOVmnkL",
-  };
+  
   useEffect(() => {
     fetch(
-      "https://api.pexels.com/v1/search?query=dog&per_page=15&orientation=landscape",
+      "https://api.unsplash.com/search/photos?query=landmarks&per_page=15&orientation=landscape",
       {
-        headers,
+        headers: {
+          Authorization: "Client-ID TU_ACCESS_KEY_AQUI"
+        }
       }
     )
       .then((res) => res.json())
       .then((data) => {
-        setFetchedImages(data.photos);
-        console.log(data.photos);
+        if (data.results && Array.isArray(data.results)) {
+          const formattedImages = data.results.map(photo => ({
+            id: photo.id,
+            src: {
+              portrait: photo.urls.small,
+              landscape: photo.urls.regular,
+              large: photo.urls.full
+            },
+            alt: photo.alt_description || photo.description || "Beautiful place",
+            photographer: photo.user.name,
+            location: photo.location?.name || photo.location?.city || photo.location?.country || "Location unknown"
+          }));
+          setFetchedImages(formattedImages);
+          console.log(formattedImages);
+        } else {
+          console.error("Invalid API response:", data);
+        }
       })
       .catch((error) => {
         console.error("Error: ", error);
