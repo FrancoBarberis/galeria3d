@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Slider from "./components/Slider";
 import Search from "./components/Search";
+import { useContext } from "react";
 
 function App() {
   const [fetchedImages, setFetchedImages] = useState([]);
