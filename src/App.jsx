@@ -7,26 +7,26 @@ function App() {
   
   useEffect(() => {
     fetch(
-      "https://api.unsplash.com/search/photos?query=landmarks&per_page=15&orientation=landscape",
+      "https://api.pexels.com/v1/search?query=famous+landmarks&per_page=15",
       {
         headers: {
-          Authorization: "Client-ID TU_ACCESS_KEY_AQUI"
+          Authorization: "efKmjO98NTW2P6B0yW0jwk6dgHw8H8gYKfK4zlpteXvQDi8PBHOVmnkL"
         }
       }
     )
       .then((res) => res.json())
       .then((data) => {
-        if (data.results && Array.isArray(data.results)) {
-          const formattedImages = data.results.map(photo => ({
+        if (data.photos && Array.isArray(data.photos)) {
+          const formattedImages = data.photos.map(photo => ({
             id: photo.id,
             src: {
-              portrait: photo.urls.small,
-              landscape: photo.urls.regular,
-              large: photo.urls.full
+              portrait: photo.src.portrait,
+              landscape: photo.src.landscape,
+              large: photo.src.large2x
             },
-            alt: photo.alt_description || photo.description || "Beautiful place",
-            photographer: photo.user.name,
-            location: photo.location?.name || photo.location?.city || photo.location?.country || "Location unknown"
+            alt: photo.alt || "Famous landmark",
+            photographer: photo.photographer,
+            location: photo.alt?.split(',')[0] || "Famous Place"
           }));
           setFetchedImages(formattedImages);
           console.log(formattedImages);

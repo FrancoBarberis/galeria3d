@@ -59,7 +59,11 @@ export default function Layout({ images }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="description text-white text-2xl font-semibold text-wrap max-w-sm"
+              className="description text-white text-3xl font-bold text-wrap max-w-lg uppercase tracking-wide"
+              style={{
+                textShadow: '3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7)',
+                letterSpacing: '0.05em'
+              }}
             >
               {selectedImage?.alt}
             </motion.p>
@@ -68,9 +72,12 @@ export default function Layout({ images }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="photographer text-white text-lg z-10 mt-2"
+              className="photographer text-white text-xl z-10 mt-3 font-semibold uppercase tracking-wider max-w-lg"
+              style={{
+                textShadow: '2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.6)'
+              }}
             >
-              Photo by: {formatPhotographerName(selectedImage?.photographer)}
+              PHOTO BY: {formatPhotographerName(selectedImage?.photographer)}
             </motion.p>
 
             {selectedImage?.location && (
@@ -78,9 +85,12 @@ export default function Layout({ images }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="location text-white text-md z-10 mt-1 opacity-80"
+                className="location text-white text-lg z-10 mt-2 font-medium uppercase tracking-wide max-w-lg"
+                style={{
+                  textShadow: '2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.6)'
+                }}
               >
-                📍 {selectedImage.location}
+                {selectedImage.location}
               </motion.p>
             )}
           </motion.div>
