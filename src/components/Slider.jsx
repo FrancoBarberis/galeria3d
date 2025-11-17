@@ -189,7 +189,7 @@ export default function Slider({ images, onImageClick }) {
           <button
             onClick={goPrev}
             disabled={!canPrev}
-            className="prev-button cursor-pointer bg-gray-700 bg-opacity-80 rounded-full disabled:opacity-30 w-10 h-10 flex items-center justify-center hover:bg-gray-600 hover:bg-opacity-90 transition-all focus:outline-none active:bg-gray-800"
+            className="prev-button cursor-pointer bg-black bg-opacity-30 rounded-full disabled:opacity-30 w-10 h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <line x1="10" y1="3" x2="6" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
@@ -199,7 +199,7 @@ export default function Slider({ images, onImageClick }) {
           <button
             onClick={goNext}
             disabled={!canNext}
-            className="next-button cursor-pointer bg-gray-700 bg-opacity-80 rounded-full disabled:opacity-30 w-10 h-10 flex items-center justify-center hover:bg-gray-600 hover:bg-opacity-90 transition-all focus:outline-none active:bg-gray-800"
+            className="next-button cursor-pointer bg-black bg-opacity-30 rounded-full disabled:opacity-30 w-10 h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <line x1="6" y1="3" x2="10" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round"/>

@@ -4,10 +4,13 @@ import Layout from "./components/Layout";
 
 function App() {
   const [fetchedImages, setFetchedImages] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("famous+landmarks");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
   
   useEffect(() => {
     fetch(
-      "https://api.pexels.com/v1/search?query=famous+landmarks&per_page=15",
+      `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=${currentPage}`,
       {
         headers: {
           Authorization: "efKmjO98NTW2P6B0yW0jwk6dgHw8H8gYKfK4zlpteXvQDi8PBHOVmnkL"
@@ -29,6 +32,7 @@ function App() {
             location: photo.alt?.split(',')[0] || "Famous Place"
           }));
           setFetchedImages(formattedImages);
+          setHasNextPage(data.total_results > (currentPage * 15));
           console.log(formattedImages);
         } else {
           console.error("Invalid API response:", data);
@@ -37,12 +41,35 @@ function App() {
       .catch((error) => {
         console.error("Error: ", error);
       });
-  }, []);
+  }, [searchQuery, currentPage]);
 
+  const handleSearch = (query) => {
+    setSearchQuery(query.replace(/\s+/g, '+'));
+    setCurrentPage(1);
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="relative flex flex-col bg-black w-screen min-h-screen">
-      <Layout images={fetchedImages} />
+      <Layout 
+        images={fetchedImages} 
+        onSearch={handleSearch} 
+        currentPage={currentPage}
+        hasNextPage={hasNextPage}
+        onNextPage={handleNextPage}
+        onPrevPage={handlePrevPage}
+      />
     </div>
   );
 }

@@ -1,13 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Slider from "./Slider";
+import Search from "./Search";
 
-export default function Layout({ images }) {
+export default function Layout({ images, onSearch, currentPage, hasNextPage, onNextPage, onPrevPage }) {
   const initialImage = useMemo(
     () => (images && images.length > 0 ? images[0] : null),
     [images]
   );
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     if (initialImage) {
@@ -15,9 +17,28 @@ export default function Layout({ images }) {
     }
   }, [initialImage]);
 
+  // Precargar imagen cuando se selecciona
+  useEffect(() => {
+    if (selectedImage?.src?.landscape) {
+      setImageLoaded(false);
+      const img = new Image();
+      img.src = selectedImage.src.landscape;
+      img.onload = () => setImageLoaded(true);
+    }
+  }, [selectedImage]);
+
+  const handleImageClick = (img) => {
+    setSelectedImage(img);
+  };
+
 
   return (
-    <div className="layout relative w-full h-screen overflow-hidden">
+    <div className="layout relative w-full h-screen overflow-hidden select-none">
+      {/* Search bar */}
+      <div className="absolute top-8 right-8 z-20">
+        <Search onSearch={onSearch} />
+      </div>
+
       <AnimatePresence mode="wait">
         {selectedImage && (
           <motion.div
@@ -26,10 +47,11 @@ export default function Layout({ images }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.7 }}
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url(${selectedImage.src?.landscape})`,
               filter: "brightness(0.7)",
+              backgroundPosition: "center 35%",
             }}
           />
         )}
@@ -88,7 +110,43 @@ export default function Layout({ images }) {
       </AnimatePresence>
 
       {images && images.length > 0 ? (
-        <Slider images={images} onImageClick={setSelectedImage} />
+        <>
+          <Slider key={images[0]?.id} images={images} onImageClick={handleImageClick} />
+          
+          {/* Controles de paginación */}
+          <div className="absolute bottom-5 left-8 z-20 flex items-center gap-3">
+            <button
+              onClick={onPrevPage}
+              disabled={currentPage === 1}
+              className="bg-black bg-opacity-30 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title="Previous page"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div 
+              className="font-extrabold text-white text-lg uppercase tracking-tight px-4 py-1 bg-black bg-opacity-30 rounded-full backdrop-blur-md cursor-default"
+              style={{ 
+                textShadow: '3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7)'
+              }}
+            >
+              Page {currentPage}
+            </div>
+            
+            <button
+              onClick={onNextPage}
+              disabled={!hasNextPage}
+              className="bg-black bg-opacity-30 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title="Next page"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </>
       ) : (
         <div className="flex items-center justify-center h-full">
           <div>No images to display</div>
