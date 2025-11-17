@@ -8,9 +8,10 @@ export default function Card({image}) {
     return(
         <div className="card w-[140px] flex items-center brightness-75 cursor-pointer justify-center rounded-lg hover:brightness-100 hover:scale-102 transition-all duration-300 ease-in-out overflow-hidden group" style={{boxShadow: '5px 10px 8px rgba(0, 0, 0, 0.3)'}}>
             <img 
-                className="object-cover h-[35vh] w-full" 
+                className="object-cover h-[35vh] w-full pointer-events-none select-none" 
                 src={image.src.portrait} 
                 alt={image.alt || 'Image'}
+                draggable="false"
             />
         </div>
     )

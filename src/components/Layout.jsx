@@ -43,7 +43,7 @@ export default function Layout({ images }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.6 }}
-            className="imageTexts absolute top-1/3 left-15 z-10"
+            className="imageTexts absolute top-1/3 left-15 z-10 "
           >
             <motion.p
               initial={{ opacity: 0, y: 20 }}
