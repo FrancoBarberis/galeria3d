@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function DownloadButton({ selectedImage }) {
+export default function DownloadButton({ selectedImage, onModalOpenChange }) {
     const [showModal, setShowModal] = useState(false);
+    const [loadingStates, setLoadingStates] = useState({
+        portrait: true,
+        landscape: true,
+        square: true
+    });
+    
+    // Notificar al padre cuando cambia el estado del modal
+    useEffect(() => {
+        if (onModalOpenChange) {
+            onModalOpenChange(showModal);
+        }
+    }, [showModal, onModalOpenChange]);
 
     const handleDownload = async (format, url) => {
         if (!selectedImage || !url) return;
@@ -33,26 +45,32 @@ export default function DownloadButton({ selectedImage }) {
             name: 'Portrait', 
             url: selectedImage?.src?.portrait,
             ratio: 'aspect-[2/3]',
-            label: '2:3'
+            label: '2:3',
+            key: 'portrait'
         },
         { 
             name: 'Landscape', 
             url: selectedImage?.src?.landscape,
             ratio: 'aspect-[4/3]',
-            label: '4:3'
+            label: '4:3',
+            key: 'landscape'
         },
         { 
             name: 'Square', 
             url: selectedImage?.src?.large,
             ratio: 'aspect-square',
-            label: '1:1'
+            label: '1:1',
+            key: 'square'
         }
     ];
 
     return (
         <>
             <button
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+                    setShowModal(true);
+                    setLoadingStates({ portrait: true, landscape: true, square: true });
+                }}
                 className="bg-black bg-opacity-30 backdrop-blur-md text-white p-3 rounded-full hover:bg-opacity-40 transition-all cursor-pointer focus:outline-none"
                 title="Download image"
             >
@@ -101,7 +119,20 @@ export default function DownloadButton({ selectedImage }) {
                                     onClick={() => handleDownload(format.name.toLowerCase(), format.url)}
                                     className="flex flex-col items-center gap-3 p-4 bg-black bg-opacity-40 rounded-xl hover:bg-opacity-60 transition-all cursor-pointer focus:outline-none group"
                                 >
-                                    <div className={`w-full ${format.ratio} bg-gradient-to-br from-gray-600 to-gray-800 rounded-lg border-2 border-gray-500 group-hover:border-white transition-all`} />
+                                    <div className={`w-full ${format.ratio} rounded-lg border-2 border-gray-500 group-hover:border-white transition-all overflow-hidden bg-gray-800 relative`}>
+                                        {/* Spinner de carga */}
+                                        {loadingStates[format.key] && (
+                                            <div className="absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-300">
+                                                <div className="w-8 h-8 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+                                            </div>
+                                        )}
+                                        <img 
+                                            src={format.url} 
+                                            alt={format.name}
+                                            className={`w-full h-full object-cover ${loadingStates[format.key] ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+                                            onLoad={() => setLoadingStates(prev => ({ ...prev, [format.key]: false }))}
+                                        />
+                                    </div>
                                     <div className="text-white font-semibold uppercase tracking-wide">
                                         {format.name}
                                     </div>

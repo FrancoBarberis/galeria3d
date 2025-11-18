@@ -24,11 +24,11 @@ export default function Search({ onSearch }) {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Search whatever you want.." 
-                    className="border-2 border-gray-500 bg-black bg-opacity-30 rounded-full pl-11 pr-4 py-2 text-sm w-64 text-white placeholder-gray-400 font-semibold tracking-wider focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent backdrop-blur-md" 
+                    placeholder="Search.." 
+                    className="border-2 border-gray-500 bg-black bg-opacity-30 rounded-full pl-10 pr-3 py-2 text-sm w-32 md:w-64 text-white placeholder-gray-400 font-semibold tracking-wider focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent backdrop-blur-md" 
                 />
                 <svg 
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                    className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"

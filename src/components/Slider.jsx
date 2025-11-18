@@ -1,18 +1,108 @@
 import { useState, useRef, useEffect } from "react";
 import Card from "./Card";
 
-export default function Slider({ images, onImageClick }) {
-  const visibleSlides = 4;
-  const cardWidth = 140;
+export default function Slider({ images, onImageClick, onProgressChange, isPaused }) {
+  const visibleSlides = window.innerWidth < 768 ? 3 : 4;
+  const cardWidth = window.innerWidth < 768 ? 120 : 140;
   const gap = 12;
   const [start, setStart] = useState(0);
   const maxStart = Math.max(0, images.length - visibleSlides);
   const canNext = start < maxStart;
   const canPrev = start > 0;
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
+  const isChangingImageRef = useRef(false);
   
-  // Calcular el índice de la imagen más a la derecha visible
-  const rightmostVisibleIndex = Math.min(start + visibleSlides, images.length);
+  // Resetear el start cuando cambian las imágenes (nueva página)
+  useEffect(() => {
+    setStart(0);
+    setCurrentImageIndex(0);
+    setProgress(0);
+    progressRef.current = 0;
+    // Seleccionar la primera imagen al cargar
+    if (images && images.length > 0) {
+      onImageClick(images[0]);
+    }
+  }, [images]);
+  
+  // Sincronizar progressRef cuando cambia isPaused
+  useEffect(() => {
+    // Sincronizar el ref con el estado actual cuando se reanuda
+    progressRef.current = progress;
+  }, [isPaused, progress]);
+  
+  // Auto-scroll con barra de progreso
+  useEffect(() => {
+    if (isPaused) {
+      // Si está pausado, no iniciar el timer pero mantener el progreso actual
+      return;
+    }
+    
+    const autoScrollInterval = 5000; // 5 segundos
+    const updateInterval = 50; // actualizar cada 50ms
+    const increment = (updateInterval / autoScrollInterval) * 100;
+    
+    const progressTimer = setInterval(() => {
+      // Evitar ejecutar si ya estamos cambiando imagen
+      if (isChangingImageRef.current) {
+        return;
+      }
+      
+      progressRef.current += increment;
+      
+      if (progressRef.current >= 100) {
+        // Marcar que estamos cambiando imagen
+        isChangingImageRef.current = true;
+        
+        setCurrentImageIndex(prevIndex => {
+          const nextIndex = (prevIndex + 1) % images.length;
+          
+          // Si volvimos al inicio (índice 0), resetear el slider
+          if (nextIndex === 0) {
+            setStart(0);
+          } else {
+            // Calcular si necesita avanzar el slider
+            setStart(currentStart => {
+              const shouldScroll = nextIndex >= currentStart + visibleSlides;
+              if (shouldScroll && currentStart < maxStart) {
+                return currentStart + 1;
+              }
+              return currentStart;
+            });
+          }
+          
+          // Cambiar la imagen seleccionada
+          if (images[nextIndex]) {
+            onImageClick(images[nextIndex]);
+          }
+          
+          return nextIndex;
+        });
+        
+        // Resetear progreso después de cambiar imagen
+        progressRef.current = 0;
+        setProgress(0);
+        if (onProgressChange) {
+          onProgressChange(0);
+        }
+        
+        // Desmarcar después de un pequeño delay
+        setTimeout(() => {
+          isChangingImageRef.current = false;
+        }, 100);
+      } else {
+        setProgress(progressRef.current);
+        if (onProgressChange) {
+          onProgressChange(progressRef.current);
+        }
+      }
+    }, updateInterval);
+    
+    return () => {
+      clearInterval(progressTimer);
+    };
+  }, [isPaused, visibleSlides, maxStart, images, onImageClick, onProgressChange]);
   
   // Estados para drag
   const [isDragging, setIsDragging] = useState(false);
@@ -39,7 +129,13 @@ export default function Slider({ images, onImageClick }) {
 
   const handleImageClick = (img, index) => {
     if (!hasMoved) {
-      setCurrentIndex(index + 1);
+      setCurrentImageIndex(index);
+      // Resetear progreso cuando el usuario selecciona manualmente una imagen
+      progressRef.current = 0;
+      setProgress(0);
+      if (onProgressChange) {
+        onProgressChange(0);
+      }
       onImageClick(img);
     }
   };
@@ -159,7 +255,15 @@ export default function Slider({ images, onImageClick }) {
   }, [start, slideDistance, maxStart]);
 
   return (
-    <div className="slider absolute bottom-5 right-15 bg-transparent">
+    <div className="slider absolute bottom-5 left-1/2 md:left-auto md:right-15 transform -translate-x-1/2 md:translate-x-0 bg-transparent">
+      {/* Barra de progreso de auto-scroll */}
+      <div className="w-full h-1 bg-gray-700 bg-opacity-30 rounded-full mb-2 overflow-hidden">
+        <div 
+          className="h-full bg-white bg-opacity-70 transition-all duration-100 ease-linear"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      
       {/* Imágenes visibles */}
       <div 
         ref={carouselRef}
@@ -218,7 +322,7 @@ export default function Slider({ images, onImageClick }) {
             textShadow: '3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7)'
           }}
         >
-          {rightmostVisibleIndex}/{images.length}
+          {currentImageIndex + 1}/{images.length}
         </div>
       </div>
     </div>
