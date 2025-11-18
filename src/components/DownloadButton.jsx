@@ -54,6 +54,7 @@ export default function DownloadButton({ selectedImage }) {
             <button
                 onClick={() => setShowModal(true)}
                 className="bg-black bg-opacity-30 backdrop-blur-md text-white p-3 rounded-full hover:bg-opacity-40 transition-all cursor-pointer focus:outline-none"
+                title="Download image"
             >
                 <svg 
                     className="w-5 h-5" 

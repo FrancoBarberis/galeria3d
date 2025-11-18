@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Slider from "./Slider";
 import Search from "./Search";
 import DownloadButton from "./DownloadButton";
+import HideUIButton from "./HideUIButton";
 
 export default function Layout({ images, onSearch, currentPage, hasNextPage, onNextPage, onPrevPage }) {
   const initialImage = useMemo(
@@ -11,6 +12,7 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
   );
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isUIHidden, setIsUIHidden] = useState(false);
 
   useEffect(() => {
     if (initialImage) {
@@ -35,15 +37,18 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
 
   return (
     <div className="layout relative w-full h-screen overflow-hidden select-none">
-      {/* Download button */}
-      <div className="absolute top-8 left-8 z-20">
-        <DownloadButton selectedImage={selectedImage} />
+      {/* Control buttons - always in same position */}
+      <div className="absolute top-8 left-8 z-20 flex gap-2">
+        {!isUIHidden && <DownloadButton selectedImage={selectedImage} />}
+        <HideUIButton isHidden={isUIHidden} onToggle={() => setIsUIHidden(!isUIHidden)} />
       </div>
 
       {/* Search bar */}
-      <div className="absolute top-8 right-8 z-20">
-        <Search onSearch={onSearch} />
-      </div>
+      {!isUIHidden && (
+        <div className="absolute top-8 right-8 z-20">
+          <Search onSearch={onSearch} />
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
         {selectedImage && (
@@ -57,14 +62,14 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
             style={{
               backgroundImage: `url(${selectedImage.src?.landscape})`,
               filter: "brightness(0.7)",
-              backgroundPosition: "center 35%",
+              backgroundPosition: "center top",
             }}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
-        {selectedImage && (
+        {selectedImage && !isUIHidden && (
           <motion.div
             key={selectedImage.id}
             initial={{ opacity: 0, x: -50 }}
@@ -115,7 +120,7 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
         )}
       </AnimatePresence>
 
-      {images && images.length > 0 ? (
+      {images && images.length > 0 && !isUIHidden ? (
         <>
           <Slider key={images[0]?.id} images={images} onImageClick={handleImageClick} />
           

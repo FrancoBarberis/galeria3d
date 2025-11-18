@@ -11,6 +11,9 @@ export default function Slider({ images, onImageClick }) {
   const canPrev = start > 0;
   const [currentIndex, setCurrentIndex] = useState(1);
   
+  // Calcular el índice de la imagen más a la derecha visible
+  const rightmostVisibleIndex = Math.min(start + visibleSlides, images.length);
+  
   // Estados para drag
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -215,7 +218,7 @@ export default function Slider({ images, onImageClick }) {
             textShadow: '3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7)'
           }}
         >
-          {currentIndex}/{images.length}
+          {rightmostVisibleIndex}/{images.length}
         </div>
       </div>
     </div>
