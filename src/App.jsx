@@ -10,7 +10,7 @@ function App() {
   
   useEffect(() => {
     fetch(
-      `http://localhost:3000/api/wallpaper?search=${searchQuery}&per_page=15&page=${currentPage}`
+      `http://api/wallpaper?search=${searchQuery}&per_page=15&page=${currentPage}`
     )
       .then((res) => res.json())
       .then((data) => {
