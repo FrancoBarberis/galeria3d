@@ -97,7 +97,7 @@ export default function DownloadButton({ selectedImage, onModalOpenChange }) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center"
+                        className="fixed inset-0 backdrop-blur-md z-50 flex items-center justify-center"
                         onClick={() => setShowModal(false)}
                     >
                         <motion.div 

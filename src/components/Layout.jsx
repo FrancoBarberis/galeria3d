@@ -57,12 +57,12 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
       </div>
       
       {/* Download button - always visible */}
-      <div className="absolute top-8 left-4 md:left-8 z-20">
+      <div className="absolute top-8 left-4 md:left-8 z-40">
         <DownloadButton selectedImage={selectedImage} onModalOpenChange={setIsModalOpen} />
       </div>
 
       {/* Hide/Show UI button - separated from download */}
-      <div className="absolute top-8 left-16 md:left-20 z-20">
+      <div className="absolute top-8 left-16 md:left-20 z-40">
         <HideUIButton isHidden={isUIHidden} onToggle={() => setIsUIHidden(!isUIHidden)} />
       </div>
 
@@ -74,7 +74,7 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute top-8 right-4 md:right-8 z-20"
+            className="absolute top-8 right-4 md:right-8 z-40"
           >
             <Search onSearch={onSearch} />
           </motion.div>
@@ -158,7 +158,7 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
             transition={{ duration: 0.3 }}
           >
             {/* Controles de paginación - arriba del slider en mobile, abajo en desktop */}
-            <div className="absolute bottom-32 md:bottom-5 left-1/2 md:left-4 transform -translate-x-1/2 md:translate-x-0 z-20 flex items-center gap-3">
+            <div className="absolute bottom-60 md:bottom-5 left-1/2 md:left-4 transform -translate-x-1/2 md:translate-x-0 z-40 flex items-center gap-3">
             <button
               onClick={onPrevPage}
               disabled={currentPage === 1}
