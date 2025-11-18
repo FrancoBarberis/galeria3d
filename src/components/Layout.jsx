@@ -10,18 +10,12 @@ export default function Layout({ images, onSearch, currentPage, hasNextPage, onN
     () => (images && images.length > 0 ? images[0] : null),
     [images]
   );
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(initialImage);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isUIHidden, setIsUIHidden] = useState(false);
   const [sliderProgress, setSliderProgress] = useState(0);
   const [isProgressPaused, setIsProgressPaused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (initialImage) {
-      setSelectedImage(initialImage);
-    }
-  }, [initialImage]);
 
   // Pausar progreso cuando se oculta UI o se abre modal
   useEffect(() => {
