@@ -10,12 +10,7 @@ function App() {
   
   useEffect(() => {
     fetch(
-      `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=${currentPage}`,
-      {
-        headers: {
-          Authorization: "efKmjO98NTW2P6B0yW0jwk6dgHw8H8gYKfK4zlpteXvQDi8PBHOVmnkL"
-        }
-      }
+      `http://localhost:3000/api/wallpaper?search=${searchQuery}&per_page=15&page=${currentPage}`
     )
       .then((res) => res.json())
       .then((data) => {
