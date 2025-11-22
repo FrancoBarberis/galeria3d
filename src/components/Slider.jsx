@@ -2,9 +2,20 @@ import { useState, useRef, useEffect } from "react";
 import Card from "./Card";
 
 export default function Slider({ images, onImageClick, onProgressChange, isPaused }) {
-  const visibleSlides = window.innerWidth < 768 ? 3 : 4;
-  const cardWidth = window.innerWidth < 768 ? 120 : 140;
-  const gap = 12;
+  const getResponsiveValues = () => {
+    const width = window.innerWidth;
+    if (width < 375) { // Extra small phones
+      return { visibleSlides: 3, cardWidth: 90, gap: 8 };
+    } else if (width < 640) { // Small phones (iPhone SE, etc)
+      return { visibleSlides: 3, cardWidth: 100, gap: 10 };
+    } else if (width < 1024) { // Tablets
+      return { visibleSlides: 3, cardWidth: 120, gap: 12 };
+    } else { // Desktop
+      return { visibleSlides: 4, cardWidth: 140, gap: 12 };
+    }
+  };
+  
+  const { visibleSlides, cardWidth, gap } = getResponsiveValues();
   const [start, setStart] = useState(0);
   const maxStart = Math.max(0, images.length - visibleSlides);
   const canNext = start < maxStart;
@@ -258,7 +269,7 @@ export default function Slider({ images, onImageClick, onProgressChange, isPause
   }, [start, slideDistance, maxStart]);
 
   return (
-    <div className="slider absolute bottom-5 left-1/2 md:left-auto md:right-15 transform -translate-x-1/2 md:translate-x-0 bg-transparent">
+    <div className="slider absolute bottom-5 left-1/2 lg:left-auto lg:right-15 transform -translate-x-1/2 lg:translate-x-0 bg-transparent">
       {/* Barra de progreso de auto-scroll */}
       <div className="w-full h-1 bg-gray-700 bg-opacity-30 rounded-full mb-2 overflow-hidden">
         <div 
@@ -295,13 +306,13 @@ export default function Slider({ images, onImageClick, onProgressChange, isPause
       </div>
       {/* Botones e índice*/}
       <div className="carousel-info flex flex-row align-center justify-between">
-        <div className="prev-next-buttons flex gap-5 ml-5">
+        <div className="prev-next-buttons flex gap-3 sm:gap-5 ml-3 sm:ml-5">
           <button
             onClick={goPrev}
             disabled={!canPrev}
-            className="prev-button cursor-pointer bg-black bg-opacity-30 rounded-full disabled:opacity-30 w-10 h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md"
+            className="prev-button cursor-pointer bg-black bg-opacity-30 rounded-full disabled:opacity-30 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-4 sm:h-4">
               <line x1="10" y1="3" x2="6" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
               <line x1="6" y1="8" x2="10" y2="13" stroke="white" strokeWidth="2" strokeLinecap="round"/>
             </svg>
@@ -309,16 +320,16 @@ export default function Slider({ images, onImageClick, onProgressChange, isPause
           <button
             onClick={goNext}
             disabled={!canNext}
-            className="next-button cursor-pointer bg-black bg-opacity-30 rounded-full disabled:opacity-30 w-10 h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md"
+            className="next-button cursor-pointer bg-black bg-opacity-30 rounded-full disabled:opacity-30 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center hover:bg-opacity-40 transition-all focus:outline-none backdrop-blur-md"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-4 sm:h-4">
               <line x1="6" y1="3" x2="10" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
               <line x1="10" y1="8" x2="6" y2="13" stroke="white" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </button>
         </div>
         <div 
-          className="index-display font-extrabold flex place-items-center mr-5 text-white text-2xl uppercase tracking-tight" 
+          className="index-display font-extrabold flex place-items-center mr-3 sm:mr-5 text-white text-lg sm:text-2xl uppercase tracking-tight" 
           style={{ 
             letterSpacing: '0.05em', 
             lineHeight: '1.2',

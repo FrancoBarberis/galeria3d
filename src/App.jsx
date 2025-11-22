@@ -8,14 +8,11 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
   
+
+  //FETCH A RUTA RELATIVA PARA EVITAR CONFLICTO DE HTTP VS HTTPS
   useEffect(() => {
     fetch(
-      `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=${currentPage}`,
-      {
-        headers: {
-          Authorization: "efKmjO98NTW2P6B0yW0jwk6dgHw8H8gYKfK4zlpteXvQDi8PBHOVmnkL"
-        }
-      }
+      `/api/wallpaper?search=${searchQuery}&per_page=15&page=${currentPage}`
     )
       .then((res) => res.json())
       .then((data) => {
